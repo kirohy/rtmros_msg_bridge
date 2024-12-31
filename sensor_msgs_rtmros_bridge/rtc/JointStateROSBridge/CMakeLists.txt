@@ -6,23 +6,28 @@ set(CMAKE_BUILD_TYPE Release)
 add_definitions(-Wno-deprecated)
 
 find_package(catkin REQUIRED COMPONENTS
-  rtmbuild
   roscpp
   sensor_msgs
   )
 find_package(choreonoid REQUIRED)
 
-# 相対パスを絶対パスに直す
-set(CHOREONOID_BODY_LIBRARIES_ABS)
-foreach(lib ${CHOREONOID_BODY_LIBRARIES})
-  find_library(${lib}_abs NAMES ${lib} PATHS ${CHOREONOID_LIBRARY_DIRS})
-  set(CHOREONOID_BODY_LIBRARIES_ABS ${CHOREONOID_BODY_LIBRARIES_ABS} ${${lib}_abs})
-endforeach(lib)
+find_package(PkgConfig)
+pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
 
-include_directories(${catkin_INCLUDE_DIRS} ${CHOREONOID_INCLUDE_DIRS})
-rtmbuild_add_library(JointStateROSBridge SHARED JointStateROSBridge.cpp)
-target_link_libraries(JointStateROSBridge ${catkin_LIBRARIES} ${CHOREONOID_BODY_LIBRARIES_ABS})
+include_directories(${catkin_INCLUDE_DIRS} ${CHOREONOID_INCLUDE_DIRS} ${openrtm_aist_INCLUDE_DIRS})
+add_library(JointStateROSBridge SHARED JointStateROSBridge.cpp)
+target_link_libraries(JointStateROSBridge ${catkin_LIBRARIES} ${CHOREONOID_BODY_LIBRARIES} ${openrtm_aist_LIBRARIES})
 set_target_properties(JointStateROSBridge PROPERTIES PREFIX "") # libCommandLevelROSBridge.so -> CommandLevelROSBridge.so
 
-rtmbuild_add_executable(JointStateROSBridgeComp JointStateROSBridgeComp.cpp)
+add_executable(JointStateROSBridgeComp JointStateROSBridgeComp.cpp)
 target_link_libraries(JointStateROSBridgeComp JointStateROSBridge)
+
+install(TARGETS JointStateROSBridge
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(TARGETS JointStateROSBridgeComp
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

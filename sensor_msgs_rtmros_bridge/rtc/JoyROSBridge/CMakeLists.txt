@@ -6,15 +6,26 @@ set(CMAKE_BUILD_TYPE Release)
 add_definitions(-Wno-deprecated)
 
 find_package(catkin REQUIRED COMPONENTS
-  rtmbuild
   roscpp
   sensor_msgs
   )
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(openrtm_aist openrtm-aist REQUIRED)
 
 include_directories(${catkin_INCLUDE_DIRS})
-rtmbuild_add_library(JoyROSBridge SHARED JoyROSBridge.cpp)
-target_link_libraries(JoyROSBridge ${catkin_LIBRARIES})
+add_library(JoyROSBridge SHARED JoyROSBridge.cpp)
+target_link_libraries(JoyROSBridge ${catkin_LIBRARIES} ${openrtm_aist_LIBRARIES})
 set_target_properties(JoyROSBridge PROPERTIES PREFIX "") # libJoyROSBridge.so -> JoyROSBridge.so
 
-rtmbuild_add_executable(JoyROSBridgeComp JoyROSBridgeComp.cpp)
+add_executable(JoyROSBridgeComp JoyROSBridgeComp.cpp)
 target_link_libraries(JoyROSBridgeComp JoyROSBridge)
+
+install(TARGETS JoyROSBridge
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(TARGETS JoyROSBridgeComp
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

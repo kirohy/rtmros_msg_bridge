@@ -9,12 +9,12 @@ set(CMAKE_CXX_STANDARD 14)
 cmake_policy(SET CMP0046 OLD)
 
 find_package(catkin REQUIRED COMPONENTS
-  rtmbuild
+  rtmbuild2
   roscpp
   )
 
 # initialize rtmbuild (generate_messages is called)
-rtmbuild_init()
+rtmbuild2_init()
 
 catkin_package(
 #  INCLUDE_DIRS include
