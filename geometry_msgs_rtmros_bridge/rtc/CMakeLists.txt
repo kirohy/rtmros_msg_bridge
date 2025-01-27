@@ -1,2 +1,3 @@
 add_subdirectory(PoseStampedROSBridge)
+add_subdirectory(TwistStampedROSBridge)
 add_subdirectory(WrenchStampedROSBridge)
