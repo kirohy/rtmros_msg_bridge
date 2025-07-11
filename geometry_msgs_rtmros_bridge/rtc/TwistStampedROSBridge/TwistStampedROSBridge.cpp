@@ -13,7 +13,7 @@ RTC::ReturnCode_t TwistStampedROSBridge::onInitialize(){
 
   ros::NodeHandle pnh("~");
   pnh.param("frame_id", frame_id_, std::string(""));
-  sub_ = pnh.subscribe("input", 1, &TwistStampedROSBridge::topicCb, this);
+  sub_ = pnh.subscribe("input", 1, &TwistStampedROSBridge::topicCb, this, ros::TransportHints().tcpNoDelay());
   pub_ = pnh.advertise<geometry_msgs::TwistStamped>("output", 1);
 
   return RTC::RTC_OK;

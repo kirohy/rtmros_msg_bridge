@@ -15,7 +15,7 @@ RTC::ReturnCode_t PoseStampedROSBridge::onInitialize(){
 
   ros::NodeHandle pnh("~");
   pnh.param("frame_id", frame_id_, std::string(""));
-  sub_ = pnh.subscribe("input", 1, &PoseStampedROSBridge::topicCb, this);
+  sub_ = pnh.subscribe("input", 1, &PoseStampedROSBridge::topicCb, this, ros::TransportHints().tcpNoDelay());
   pub_ = pnh.advertise<geometry_msgs::PoseStamped>("output", 1);
 
   return RTC::RTC_OK;

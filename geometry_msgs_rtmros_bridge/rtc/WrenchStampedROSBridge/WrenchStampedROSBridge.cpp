@@ -15,7 +15,7 @@ RTC::ReturnCode_t WrenchStampedROSBridge::onInitialize(){
 
   ros::NodeHandle pnh("~");
   pnh.param("frame_id", frame_id_, std::string(""));
-  sub_ = pnh.subscribe("input", 1, &WrenchStampedROSBridge::topicCb, this);
+  sub_ = pnh.subscribe("input", 1, &WrenchStampedROSBridge::topicCb, this, ros::TransportHints().tcpNoDelay());
   pub_ = pnh.advertise<geometry_msgs::WrenchStamped>("output", 1);
 
   return RTC::RTC_OK;
